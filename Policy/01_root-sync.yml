@@ -1,0 +1,13 @@
+# Policy stub to persist synchronizer configuration
+
+- !host Sync_{{SyncHostName}}
+
+- !group {{vault-id}}-admins
+
+- !grant
+  role: !group {{vault-id}}-admins
+  member: !host Sync_{{SyncHostName}}
+
+- !policy
+  owner: !group {{vault-id}}-admins
+  id: {{vault-id}}
