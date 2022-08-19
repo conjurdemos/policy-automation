@@ -1,0 +1,23 @@
+{
+    "authn": {
+        "type": "apikey",
+        "authn_config": {
+            "token_path": ""
+        }
+    },
+    "conjur": {
+        "master": "",
+        "follower": "",
+        "account": "default",
+        "hostBranch": "apps",
+        "host": "",
+        "apikey": "",
+        "cleanup": "true"
+    },
+    "pvwa": {
+        "url": "",
+        "login": "user",
+        "password": "pass",
+        "platform": "platform"
+    }
+}

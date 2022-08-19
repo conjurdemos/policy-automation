@@ -1,0 +1,24 @@
+# Policy branch declaration for Automation service.
+# We create a policy branch titled "apps" to house applications.
+# in this policy branch we reference authenticators through a global authn group.
+
+# Declare host to handle automation
+- !host conjur-automation
+
+- !group automation-admins
+
+- !grant
+  role: !role automation-admins
+  member: !host conjur-automation
+
+- !policy
+  owner: !group automation-admins
+  id: apps
+  body:
+    - !group authenticators
+    
+# Update conjur-automation to be able to update the synchronizer
+
+- !grant
+  role: !group {{vault-id}}-admins
+  member: !host conjur-automation

@@ -1,0 +1,40 @@
+# Reference - https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Integrations/k8s-ocp/k8s-k8s-authn.htm
+# The purpose of this example is to illustrate onboarding to the global consumers group without referencing individual hosts.
+# =================================================
+# == Enroll a Kubernetes authentication service
+# =================================================
+- !policy
+  id: conjur/authn-k8s/dev-cluster
+  annotations:
+    description: K8s Authenticator policy definitions
+
+  body:
+  # vars for ocp/k8s api url & access creds
+  - !variable kubernetes/service-account-token
+  - !variable kubernetes/ca-cert
+  - !variable kubernetes/api-url
+
+  # vars for CA for this service ID
+  - !variable ca/cert
+  - !variable ca/key
+
+  - !webservice
+    annotations:
+      description: Authenticator service for K8s cluster dev-cluster
+
+  # Create 'consumers' group
+  - !group consumers
+
+  # Grant consumers group role authentication privileges
+  - !permit
+    role: !group consumers
+    privilege: [ authenticate ]
+    resource: !webservice
+
+# With the authenticator webservice declared, we want to give the apps/authenticators group ability to authenticate
+# Important note: We are taking away the ability to "read" the authenticator and allow it to authenticate. 
+# This will allow the host to be updated with annotations and authenticate through clusters, but not be able to see what clusters it can authenticate to.
+# When configuring authenticators and updating annotations, please follow best practices to ensure application identity is preserved and in tact.
+- !grant
+  role: !group conjur/authn-k8s/dev-cluster/consumers
+  member: !group apps/authenticators
