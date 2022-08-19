@@ -14,7 +14,7 @@ by CyberArk**. For more detailed information on our certification levels, see [o
 - The **first** check is group members length is equal to 1. 
 - The **second** check is if this group has admin_option to true. Please see the example output below:
 ```json
-   `{
+   {
        "created_at": "2019-10-31T14:37:00.878+00:00",
        "id": "conjur:group:vault/LOBName/SafeName/delegation/consumers",
        "policy": "conjur:policy:vault/LOBName/SafeName/delegation",
