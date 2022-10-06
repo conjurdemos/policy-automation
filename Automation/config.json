@@ -1,8 +1,12 @@
 {
     "authn": {
-        "type": "apikey",
+        "type": "provider",
         "authn_config": {
-            "token_path": ""
+            "automation_safe": "",
+	        "conjurObject": "",
+	        "pasObject": "",
+	        "appID": "",
+	        "cpPath": "C:\\Program Files\\CyberArk\\ApplicationPasswordSdk\\CLIPasswordSDK.exe"
         }
     },
     "conjur": {
@@ -10,14 +14,10 @@
         "follower": "",
         "account": "default",
         "hostBranch": "apps",
-        "host": "",
-        "apikey": "",
-        "cleanup": "true"
+        "cleanup": "false"
     },
     "pvwa": {
         "url": "",
-        "login": "user",
-        "password": "pass",
-        "platform": "platform"
+        "platform": ""
     }
 }
