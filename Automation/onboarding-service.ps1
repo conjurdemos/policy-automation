@@ -516,10 +516,6 @@ function build(){
                 log "Host onboarded to Conjur, onboarding to PVWA"
                 $onboarded = pasOnboard -hostRef $parsed -pvwaInfo $pvwaConfig -safeRef $safeName -conjUrl $conjurConfig.master
 
-                # CHECK:
-                #   Is this the correct logic we want to implement, or should we first onboard the entitlement with recovery 
-                #   of an api key as a secondary thought
-
                 if ( $onboarded ) {
                     
                     log "Entitling new host"
