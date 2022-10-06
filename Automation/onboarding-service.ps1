@@ -6,38 +6,55 @@ function buildConfiguration(){
 
     $authnMethod = $confHash.authn.type
 
-    # Check authn methods, starting with apikey [not recommended]
-    # Api Key is for demonstration or testing purposes only
-    if ( $authnMethod -eq 'apikey') {
+    if ( $authnMethod -eq 'provider') {
 
-        # Check if username is null
-        if ( $null -eq $confHash.conjur.host ) {
+        if ( $null -eq $confHash.authn.authn_config.automation_safe ) {
 
-            Write-Host "No host found, please update Conjur section in config.json"
+            log "No automation_safe found, please update authn section in config.json"
+            $valid = $false
+
+        } elseif ( $null -eq $confHash.authn.authn_config.conjurObject ) {
+
+            log "No conjurObject found, please update authn section in config.json"
+            $valid = $false
+
+        } elseif ( $null -eq $confHash.authn.authn_config.pasObject ) {
+
+            log "No pasObject found, please update authn section in config.json"
+            $valid = $false
 
         } else {
 
-            # Check if password is null
-            if ( $null -eq $confHash.conjur.apikey ){
+                # Build credential objects
 
-                Write-Host "No Api Key found, please update Conjur section in config.json"
+                $autoSafe = $confHash.authn.authn_config.automation_safe
+                $conjurObj = $confHash.authn.authn_config.conjurObject
+                $pasObj = $confHash.authn.authn_config.pasObject
+                $appID  = $confHash.authn.authn_config.appID
+                $cp     = $confHash.authn.authn_config.cpPath
 
-            } else {
+                # Build Conjur Cred Objects
 
-                # Build psCredentialObject
-                $userName = $confHash.conjur.host
-                [securestring]$pass = ConvertTo-SecureString $confHash.conjur.apikey -AsPlainText -Force
-                [pscredential]$credentials = New-Object System.Management.Automation.PSCredential ($userName, $pass)
+                $conjurHost = Invoke-Expression "& `"$path`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$conjurObj`" /o PassProps.Username"
+                $conjurKey = Invoke-Expression "& `"$path`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$conjurObj`" /o password"
+
+                [securestring]$pass = ConvertTo-SecureString $conjurKey -AsPlainText -Force
+                [pscredential]$conjurCredentials = New-Object System.Management.Automation.PSCredential ($conjurHost, $pass)
+
+                # Build PAS Cred Objects
+
+                $pasUser = Invoke-Expression "& `"$path`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$pasObj`" /o PassProps.Username"
+                $pasPass = Invoke-Expression "& `"$path`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$pasObj`" /o password"
+            
                 $idType = "user"
-
-            }
+                $valid = $true
 
         } 
 
     }
 
     $conjur = New-Object PSObject -Property @{
-        conjurCredential = $credentials
+        conjurCredential = $conjurCredentials
         master = $confHash.conjur.master
         follower = $confHash.conjur.follower
         account = $confHash.conjur.account
@@ -45,10 +62,11 @@ function buildConfiguration(){
         id = $idType
         cleanup = $confHash.conjur.cleanup
     }
+
     $pvwa = New-Object PSObject -Property @{
         url = $confHash.pvwa.url
-        logon = $confHash.pvwa.login
-        pass = $confHash.pvwa.password
+        logon = $pasUser
+        pass = $pasPass
         platform = $confHash.pvwa.platform
     }
 
@@ -57,8 +75,16 @@ function buildConfiguration(){
         pvwa = $pvwa
     }
 
+    if ( $valid -eq $true ) {
+
     log "Succesfully built Configuration"
     return $config
+
+    } else {
+
+    log "There was a failure in building the configuration."
+
+    }
 
 }
 
@@ -106,16 +132,15 @@ function parseEntity( $e, $s ){
 }
 
 function getConjurToken( $account, $cred, $url ){
-    
-    # Disable SSL Verification for this function + call
-    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 
     $headers.Add("Accept-Encoding", "base64")
     $headers.Add("Content-Type", "text/plain")
 
-    $encodedLogin = [System.Web.HttpUtility]::UrlEncode($cred.UserName)
+    $cLogon = "host/" + $cred.UserName
+
+    $encodedLogin = [System.Web.HttpUtility]::UrlEncode($cLogon)
 
     try {
 
@@ -125,7 +150,7 @@ function getConjurToken( $account, $cred, $url ){
 
     } catch {
 
-        Write-Host $_
+        log $_
 
     }
     
@@ -133,9 +158,6 @@ function getConjurToken( $account, $cred, $url ){
 }
 
 function getGroups( $token, $url, $account ){
-
-    # Disable SSL Verification for this function + call
-    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 
@@ -163,10 +185,7 @@ function getGroups( $token, $url, $account ){
 
 }
 
-function testGroup( $group, $token, $url, $account ){
-
-    # Disable SSL Verification for this function + call
-    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+function testGroup( $group, $token, $url, $account ){#Write-EventLog -LogName "Application" -Source "Conjur Onboarding Service" -EventID 43868 -EntryType Information -Message $message
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 
@@ -203,10 +222,12 @@ function PVWA-Login( $pvwaInfo ){
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $headers.Add("Content-Type", "application/json")
 
-    $body = "{
-        `"username`": `"$PVWAUSR`",
-        `"password`": `"$PVWAPASS`"
-    }"
+    $bodyRaw = @{
+        username=$PVWAUSR
+        password=$PVWAPASS
+    }
+
+    $body = ConvertTo-Json -InputObject $bodyRaw
 
     $pvwa_uri = "https://$PVWAURL/PasswordVault/API/auth/Cyberark/Logon"
 
@@ -256,8 +277,6 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
 
             foreach ( $property in $_.PSObject.Properties ) {
 
-                log $property
-
                 if ( $property.value -like "*host:$branch*" ) {
 
                     $TARGETHOST = $property.value.id
@@ -290,6 +309,7 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
         $pvwa_uri = ("https://" + $pvwa_url + "/PasswordVault/api/Accounts")
         
         $headers = @{authorization=$SESSION_TOKEN}
+
         $response = Invoke-RestMethod -Uri $pvwa_uri -Method 'POST' -ContentType "application/json" -Headers $headers -Body $bodyJson # $body
 
         log "Closing connection to $pvwa_url"
@@ -308,9 +328,6 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
 }
 
 function createHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
-
-    # Disable SSL Verification for this function + call
-    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 
@@ -349,6 +366,7 @@ function createHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
         $body = Get-Content -Path $hostFileTemp -Raw
 
         log "Attempting to onboard $thisHost to $branch"
+
         $result = Invoke-RestMethod -Uri "https://$url/policies/$account/policy/$branch" -Method PATCH -Headers $headers -Body $body
 
         $jsonResult = $result | ConvertTo-Json
@@ -378,9 +396,6 @@ function createHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
 }
 
 function createEntitlement( $thisHost, $token, $url, $account, $branch, $hostBranch, $cleanup ){
-
-        # Disable SSL Verification for this function + call
-        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 
         $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     

@@ -49,6 +49,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
 
 - Configured Conjur environment
 - Functioning Synchronizer Service
+- Configured Credential Provider for the machine the automation is running on
 
 
 ## Usage instructions
@@ -88,10 +89,28 @@ The Host automation does not handle annotations outside of creation timestamp. T
    - There are two logging formats in the automation, Windows Event Viewer (persistent) and Console Output (non-persistent)
       - Before running the automation the application must be registered as an application in Windows Event Viewer
          - Open Powershell as administrator and run the following command
-            > New-EventLog -Source "Conjur Onboarding Service" -LogName Application
+            > Write-EventLog -LogName "Application" -Source "Conjur Onboarding Service" -EventID 43868 -EntryType Information -Message $message
          - Close the Administrator session.
       - Now that the logging service is set up, all actions will be shipped to Windows Event Viewer and can be filtered by `Conjur Onboarding Service`
 - Update `config.json`
+   - Update `"authn"` section, definitions below:
+      - `"type"`: provider is the only value currently supported and should not change.
+      - `"authn_config"` definitions as followed:
+         - `"automation_safe"`: The safe that the credential provider has access to. This safe will hold the `conjur host` and `vault user` the automation will use. 
+         - `"conjurObject"`: The object name that holds the `conjur` authentication information.
+            - `host`: the host configured in policy
+               - Example: `conjur-automation`
+               - Note, the script adds `host/` into the host, so it is not necessary to add that as a value when onboarding. The script does not support `user` for use in automation.
+            - `apikey`: the current api key for the host or user running the automation
+         - `"pasObject"`: The object name that holds the `vault` authentication information.
+            - `login`: the user login information to log into PVWA
+               - Example: `Sync_HostName`
+            - `password`: the password for the above user
+            - This user needs to have permissions to see and update the safe that the LOB has been added to. If it does not, it will not be able to onboard the host into the safe properly.
+         - `"appID"`: The application ID associated with the CP and the script to retrieve credentials.
+         - `"cpPath"`: The `Credential Provider` SDK path (.exe included). This is value needs to be escaped properly or the json will be malformatted.
+            - Example: `C:\\Program Files\\CyberArk\\ApplicationPasswordSdk\\CLIPasswordSDK.exe`
+               - Note the double `\`, this escaped the slash and allows the objects to be called correctly.
    - Update `"conjur"` section, definitions below:
       - `master`: the dns of the top level domain for the master load balancer
          - Example: `global.conjur-lead.domain.com`
@@ -103,20 +122,12 @@ The Host automation does not handle annotations outside of creation timestamp. T
          - Example: prod
       - `branch`: target policy branch for applications to be onboarded to
          - Example: apps
-      - `host`: the host configured in policy
-         - Example: `host/conjur-automation` or `conjur-automation-user`
-         - It is important to note that the automation is written to be compatible with a Conjur `user` or Conjur `host`. The API Key is required for either type.
-      - `apikey`: the current api key for the host or user running the automation
       - `cleanup`: manages local policy files
          - Accepted values: true or false
          - Policy is generated based on API Calls into Conjur. It is recommended to set this value to "true".
    - Update `"pvwa"` section, definitions below:
       - `url`: the dns of the PVWA target to onboard created hosts
          - Example: `pvwa.domain.com`
-      - `login`: the user login information to log into PVWA
-         - Example: `Sync_HostName`
-         - This user needs to have permissions to see and update the safe that the LOB has been added to. If it does not, it will not be able to onboard the host into the safe properly.
-      - `password`: the password for the above user
       - `platform`: the platform being used to handle automation
          - This must match exactly from the configuration steps above.
 
