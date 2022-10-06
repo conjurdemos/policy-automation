@@ -89,7 +89,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
    - There are two logging formats in the automation, Windows Event Viewer (persistent) and Console Output (non-persistent)
       - Before running the automation the application must be registered as an application in Windows Event Viewer
          - Open Powershell as administrator and run the following command
-            > Write-EventLog -LogName "Application" -Source "Conjur Onboarding Service" -EventID 43868 -EntryType Information -Message $message
+            > New-EventLog -Source "Conjur Onboarding Service" -LogName Application
          - Close the Administrator session.
       - Now that the logging service is set up, all actions will be shipped to Windows Event Viewer and can be filtered by `Conjur Onboarding Service`
 - Update `config.json`
