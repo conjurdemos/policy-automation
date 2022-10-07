@@ -35,16 +35,16 @@ function buildConfiguration(){
 
                 # Build Conjur Cred Objects
 
-                $conjurHost = Invoke-Expression "& `"$path`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$conjurObj`" /o PassProps.Username"
-                $conjurKey = Invoke-Expression "& `"$path`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$conjurObj`" /o password"
+                $conjurHost = Invoke-Expression "& `"$cp`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$conjurObj`" /o PassProps.Username"
+                $conjurKey = Invoke-Expression "& `"$cp`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$conjurObj`" /o password"
 
                 [securestring]$pass = ConvertTo-SecureString $conjurKey -AsPlainText -Force
                 [pscredential]$conjurCredentials = New-Object System.Management.Automation.PSCredential ($conjurHost, $pass)
 
                 # Build PAS Cred Objects
 
-                $pasUser = Invoke-Expression "& `"$path`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$pasObj`" /o PassProps.Username"
-                $pasPass = Invoke-Expression "& `"$path`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$pasObj`" /o password"
+                $pasUser = Invoke-Expression "& `"$cp`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$pasObj`" /o PassProps.Username"
+                $pasPass = Invoke-Expression "& `"$cp`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$pasObj`" /o password"
             
                 $idType = "user"
                 $valid = $true
