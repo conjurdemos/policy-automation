@@ -255,7 +255,7 @@ function Close-PVWASession($pvwa_authn_token, $uri){
 
     $pvwa_uri = "https://$uri/PasswordVault/API/Auth/Logoff"
 
-    $response = Invoke-RestMethod -Uri $pvwa_uri -Method POST -Headers $headers
+    Invoke-RestMethod -Uri $pvwa_uri -Method POST -Headers $headers | Out-Null
 
     Log "Closed PVWA Session"
 
