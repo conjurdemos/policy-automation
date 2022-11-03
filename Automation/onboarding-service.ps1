@@ -310,7 +310,7 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
         
         $headers = @{authorization=$SESSION_TOKEN}
 
-        $response = Invoke-RestMethod -Uri $pvwa_uri -Method 'POST' -ContentType "application/json" -Headers $headers -Body $bodyJson # $body
+        Invoke-RestMethod -Uri $pvwa_uri -Method 'POST' -ContentType "application/json" -Headers $headers -Body $bodyJson | Out-Null# $body
 
         log "Closing connection to $pvwa_url"
         Close-PVWASession -pvwa_authn_token $SESSION_TOKEN -uri $pvwa_url
