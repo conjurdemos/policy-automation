@@ -144,7 +144,7 @@ function getConjurToken( $account, [PSCredential] $cred, $url ){
 
     try {
 
-        $authn_response = Invoke-RestMethod -UseBasicParsing -Headers $headers -Uri "https://$url/authn/$account/$encodedLogin/authenticate" -Method POST -Body $cred.GetNetworkCredential().password -ErrorAction Stop
+        $authn_response = Invoke-RestMethod -UseBasicParsing -Headers $headers -Uri "https://$url/authn/$account/$encodedLogin/authenticate" -Method POST -Body $cred.GetNetworkCredential().password -ErrorAction SilentlyContinue
 
         return $authn_response
 
@@ -170,7 +170,7 @@ function getGroups( $token, $url, $account ){
 
     try {
 
-        $groups = Invoke-RestMethod -Uri "https://$url/resources/$account" -Body $queryParams -Method GET -Headers $headers -ErrorAction Stop
+        $groups = Invoke-RestMethod -Uri "https://$url/resources/$account" -Body $queryParams -Method GET -Headers $headers -ErrorAction SilentlyContinue
 
         log "Successfully retrieved groups"
 
@@ -196,7 +196,7 @@ function testGroup( $group, $token, $url, $account ){#Write-EventLog -LogName "A
 
         log "Attempting to retrieve memberships of $group"
 
-        $members = Invoke-RestMethod -Uri "https://$url/roles/$account/group/$group" -Method GET -Headers $headers -ErrorAction Stop
+        $members = Invoke-RestMethod -Uri "https://$url/roles/$account/group/$group" -Method GET -Headers $headers -ErrorAction SilentlyContinue
 
         $membersHash = [PSCustomObject]$members
 
@@ -235,7 +235,7 @@ function New-PVWALogin( $pvwaInfo ){
         
         log "Attempting to log into PVWA"
 
-        $pvwa_authn_token = Invoke-RestMethod -Uri $pvwa_uri -Method POST -Headers $headers -Body $body -ErrorAction Stop
+        $pvwa_authn_token = Invoke-RestMethod -Uri $pvwa_uri -Method POST -Headers $headers -Body $body -ErrorAction SilentlyContinue
         
         log "Successfully logged into PVWA"
         return $pvwa_authn_token
@@ -255,7 +255,7 @@ function Close-PVWASession($pvwa_authn_token, $uri){
 
     $pvwa_uri = "https://$uri/PasswordVault/API/Auth/Logoff"
 
-    Invoke-RestMethod -Uri $pvwa_uri -Method POST -Headers $headers -ErrorAction Stop | Out-Null
+    Invoke-RestMethod -Uri $pvwa_uri -Method POST -Headers $headers -ErrorAction SilentlyContinue | Out-Null
 
     Log "Closed PVWA Session"
 
@@ -310,7 +310,7 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
         
         $headers = @{authorization=$SESSION_TOKEN}
 
-        Invoke-RestMethod -Uri $pvwa_uri -Method 'POST' -ContentType "application/json" -Headers $headers -Body $bodyJson -ErrorAction Stop | Out-Null # $body
+        Invoke-RestMethod -Uri $pvwa_uri -Method 'POST' -ContentType "application/json" -Headers $headers -Body $bodyJson -ErrorAction SilentlyContinue | Out-Null # $body
 
         log "Closing connection to $pvwa_url"
         Close-PVWASession -pvwa_authn_token $SESSION_TOKEN -uri $pvwa_url
@@ -367,7 +367,7 @@ function createHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
 
         log "Attempting to onboard $thisHost to $branch"
 
-        $result = Invoke-RestMethod -Uri "https://$url/policies/$account/policy/$branch" -Method PATCH -Headers $headers -Body $body -ErrorAction Stop
+        $result = Invoke-RestMethod -Uri "https://$url/policies/$account/policy/$branch" -Method PATCH -Headers $headers -Body $body -ErrorAction SilentlyContinue
 
         $jsonResult = $result | ConvertTo-Json
 
@@ -424,7 +424,7 @@ function createEntitlement( $thisHost, $token, $url, $account, $branch, $hostBra
             # This will prevent windows from reformating the file and giving us properly formatted yaml, avoiding a 422 from Conjur
             $body = Get-Content -Path $hostFileTemp -Raw
 
-            $result = Invoke-RestMethod -Uri "https://$url/policies/$account/policy/$branch" -Method PATCH -Headers $headers -Body $body -ErrorAction Stop
+            $result = Invoke-RestMethod -Uri "https://$url/policies/$account/policy/$branch" -Method PATCH -Headers $headers -Body $body -ErrorAction SilentlyContinue
     
             # Cleanup after use
              if ( $cleanup -eq "true" ){
