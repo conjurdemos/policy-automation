@@ -131,7 +131,7 @@ function parseEntity( $e, $s ){
 
 }
 
-function getConjurToken( $account, $cred, $url ){
+function getConjurToken( $account, [PSCredential] $cred, $url ){
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 
