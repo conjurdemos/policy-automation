@@ -248,7 +248,7 @@ function New-PVWALogin( $pvwaInfo ){
 
 }
 
-function PVWA-LogOff($pvwa_authn_token, $uri){
+function Close-PVWASession($pvwa_authn_token, $uri){
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $headers.Add("Authorization", "$pvwa_authn_token")
@@ -313,7 +313,7 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
         $response = Invoke-RestMethod -Uri $pvwa_uri -Method 'POST' -ContentType "application/json" -Headers $headers -Body $bodyJson # $body
 
         log "Closing connection to $pvwa_url"
-        PVWA-LogOff -pvwa_authn_token $SESSION_TOKEN -uri $pvwa_url
+        Close-PVWASession -pvwa_authn_token $SESSION_TOKEN -uri $pvwa_url
 
         return $true
 
