@@ -212,7 +212,7 @@ function testGroup( $group, $token, $url, $account ){#Write-EventLog -LogName "A
 
 }
 
-function PVWA-Login( $pvwaInfo ){
+function New-PVWALogin( $pvwaInfo ){
     
     # PVWA Functions
     $PVWAUSR    = $pvwaInfo.logon
@@ -304,7 +304,7 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
         $bodyJson = ConvertTo-Json -InputObject $bodyData
 
         log "Retrieving PVWA token from $pvwa_url"
-        $SESSION_TOKEN = PVWA-Login -pvwaInfo $pvwaInfo
+        $SESSION_TOKEN = New-PVWALogin -pvwaInfo $pvwaInfo
 
         $pvwa_uri = ("https://" + $pvwa_url + "/PasswordVault/api/Accounts")
         
