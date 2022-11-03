@@ -131,7 +131,7 @@ function parseEntity( $e, $s ){
 
 }
 
-function getConjurToken( $account, $cred, $url ){
+function getConjurToken( $account, [PSCredential] $cred, $url ){
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 
@@ -212,7 +212,7 @@ function testGroup( $group, $token, $url, $account ){#Write-EventLog -LogName "A
 
 }
 
-function PVWA-Login( $pvwaInfo ){
+function New-PVWALogin( $pvwaInfo ){
     
     # PVWA Functions
     $PVWAUSR    = $pvwaInfo.logon
@@ -248,14 +248,14 @@ function PVWA-Login( $pvwaInfo ){
 
 }
 
-function PVWA-LogOff($pvwa_authn_token, $uri){
+function Close-PVWASession($pvwa_authn_token, $uri){
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $headers.Add("Authorization", "$pvwa_authn_token")
 
     $pvwa_uri = "https://$uri/PasswordVault/API/Auth/Logoff"
 
-    $response = Invoke-RestMethod -Uri $pvwa_uri -Method POST -Headers $headers
+    Invoke-RestMethod -Uri $pvwa_uri -Method POST -Headers $headers | Out-Null
 
     Log "Closed PVWA Session"
 
@@ -304,16 +304,16 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
         $bodyJson = ConvertTo-Json -InputObject $bodyData
 
         log "Retrieving PVWA token from $pvwa_url"
-        $SESSION_TOKEN = PVWA-Login -pvwaInfo $pvwaInfo
+        $SESSION_TOKEN = New-PVWALogin -pvwaInfo $pvwaInfo
 
         $pvwa_uri = ("https://" + $pvwa_url + "/PasswordVault/api/Accounts")
         
         $headers = @{authorization=$SESSION_TOKEN}
 
-        $response = Invoke-RestMethod -Uri $pvwa_uri -Method 'POST' -ContentType "application/json" -Headers $headers -Body $bodyJson # $body
+        Invoke-RestMethod -Uri $pvwa_uri -Method 'POST' -ContentType "application/json" -Headers $headers -Body $bodyJson | Out-Null# $body
 
         log "Closing connection to $pvwa_url"
-        PVWA-LogOff -pvwa_authn_token $SESSION_TOKEN -uri $pvwa_url
+        Close-PVWASession -pvwa_authn_token $SESSION_TOKEN -uri $pvwa_url
 
         return $true
 
