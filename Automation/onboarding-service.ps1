@@ -45,11 +45,11 @@ function buildConfiguration(){
 
                 $pasUser = Invoke-Expression -Command "& `"$cp`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$pasObj`" /o PassProps.Username" -ErrorAction Stop
                 $pasPass = Invoke-Expression -Command "& `"$cp`" getpassword /p AppDescs.AppID=`"$appID`" /p Query=`"Safe=$autoSafe;folder=root;object=$pasObj`" /o password" -ErrorAction Stop
-            
+
                 $idType = "user"
                 $valid = $true
 
-        } 
+        }
 
     }
 
@@ -153,7 +153,7 @@ function getConjurToken( $account, [PSCredential] $cred, $url ){
         log $_
 
     }
-    
+
 
 }
 
@@ -162,7 +162,7 @@ function getGroups( $token, $url, $account ){
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 
     $headers.Add("Authorization", "Token token=`"$token`"")
-    
+
     $queryParams = @{
         kind = "group"
         search = "delegation/consumers"
@@ -213,7 +213,7 @@ function testGroup( $group, $token, $url, $account ){#Write-EventLog -LogName "A
 }
 
 function New-PVWALogin( $pvwaInfo ){
-    
+
     # PVWA Functions
     $PVWAUSR    = $pvwaInfo.logon
     $PVWAPASS   = $pvwaInfo.pass
@@ -232,11 +232,11 @@ function New-PVWALogin( $pvwaInfo ){
     $pvwa_uri = "https://$PVWAURL/PasswordVault/API/auth/Cyberark/Logon"
 
     try {
-        
+
         log "Attempting to log into PVWA"
 
         $pvwa_authn_token = Invoke-RestMethod -Uri $pvwa_uri -Method POST -Headers $headers -Body $body -ErrorAction SilentlyContinue
-        
+
         log "Successfully logged into PVWA"
         return $pvwa_authn_token
 
@@ -296,7 +296,7 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
                       Name=$objName
                       userName=$($parseID[2])
                       platformId=$pvwa_platform
-                      safeName=$safeRef                                            
+                      safeName=$safeRef
                       PlatformAccountProperties=@{AWSAccessKeyID="na"}
                       secret=$TARGETKEY
         }
@@ -307,7 +307,7 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
         $SESSION_TOKEN = New-PVWALogin -pvwaInfo $pvwaInfo
 
         $pvwa_uri = ("https://" + $pvwa_url + "/PasswordVault/api/Accounts")
-        
+
         $headers = @{authorization=$SESSION_TOKEN}
 
         Invoke-RestMethod -Uri $pvwa_uri -Method 'POST' -ContentType "application/json" -Headers $headers -Body $bodyJson -ErrorAction SilentlyContinue | Out-Null # $body
@@ -324,7 +324,7 @@ function pasOnboard( $pvwaInfo, $hostRef, $safeRef, $conjUrl, $conjAccount ){
         return $false
 
     }
-    
+
 }
 
 function createHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
@@ -376,7 +376,7 @@ function createHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
 
             log "Cleaning up local cache"
             Remove-Item -Path $hostFileTemp -Force
-            
+
             log "Successfully onboarded host"
             return $jsonResult
 
@@ -395,56 +395,60 @@ function createHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
 
 }
 
+function deleteHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
+
+}
+
 function createEntitlement( $thisHost, $token, $url, $account, $branch, $hostBranch, $cleanup ){
 
         $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    
+
         $headers.Add("Authorization", "Token token=`"$token`"")
         $headers.Add("Content-Type","text/yaml")
-    
+
         $t = Get-Date -Format o | ForEach-Object { $_ -replace ":", "." }
-    
+
         $fileName = "tmp/$t.$thisHost.entitlements.yml"
 
         $commentLine    = "# Loaded $thisHost into $branch"
         $grantDeclare   = "- !grant"
         $grantRole      = "  role: !group consumers"
         $grantMember    = "  member: !host /$hostBranch/$thisHost"
-    
+
         try {
-            
+
             log "Attempting to entitle $thisHost to $branch/consumers"
             $hostFileTemp = New-Item -ItemType "File" -Force $fileName
-    
+
             Add-Content $fileName -Encoding ASCII -Value $commentLine
             Add-Content $fileName -Encoding ASCII -Value $grantDeclare
             Add-Content $fileName -Encoding ASCII -Value $grantRole
             Add-Content $fileName -Encoding ASCII -Value $grantMember
-    
+
             # This will prevent windows from reformating the file and giving us properly formatted yaml, avoiding a 422 from Conjur
             $body = Get-Content -Path $hostFileTemp -Raw
 
             $result = Invoke-RestMethod -Uri "https://$url/policies/$account/policy/$branch" -Method PATCH -Headers $headers -Body $body -ErrorAction SilentlyContinue
-    
+
             # Cleanup after use
              if ( $cleanup -eq "true" ){
-                
+
                 log "Cleaning up local cache"
                 Remove-Item -Path $hostFileTemp -Force
                 log "Successfully entitled $thisHost"
                 return $result
-            
+
             } else {
 
                 log "Successfully entitled $thisHost"
                 return $result
-            
+
             }
-    
+
         } catch {
-    
+
             log $_
-    
+
         }
 
 }
@@ -477,8 +481,8 @@ function build(){
         # Parse raw entity, separating at : to get safe path, the second index of the array. Assign this to new variable for use
         $groupEntity = parseEntity -e $g.id -s ":"
         $thisGroup = $groupEntity[2]
-        
-        # Parse Safe from group entity, This array represents the path to the group we are trying to construct. 2nd element of the 
+
+        # Parse Safe from group entity, This array represents the path to the group we are trying to construct. 2nd element of the
         # array represents the safe name. Build object to onboard if needed
         $thisSafe = parseEntity -e $thisGroup -s "/"
 
@@ -493,7 +497,7 @@ function build(){
         $members = testGroup -group $thisGroup -token $token -url $conjurConfig.follower -account $conjurConfig.account
 
         $membershipLength = $members.members.length
-        
+
         if ( $membershipLength -eq 1 ){
 
             log "Found group membership equal to 1 for $safeName. Checking $safeName qualifies for onboarding"
@@ -507,7 +511,7 @@ function build(){
                 $adminToken = getConjurToken -account $conjurConfig.account -cred $conjurConfig.conjurCredential -url $conjurConfig.master
 
                 log "Successfully authenticated to leader"
-                log "Attempgint to create host"
+                log "Attempting to create host"
 
                 $created = createHost -thisHost $safeName -url $conjurConfig.master -account $conjurConfig.account -branch $conjurConfig.hostBranch -token $adminToken -cleanup $conjurConfig.cleanup
 
@@ -517,11 +521,15 @@ function build(){
                 $onboarded = pasOnboard -hostRef $parsed -pvwaInfo $pvwaConfig -safeRef $safeName -conjUrl $conjurConfig.master
 
                 if ( $onboarded ) {
-                    
+
                     log "Entitling new host"
                     $entitled = createEntitlement -thisHost $safeName -branch $tarEntitlementPath -url $conjurConfig.master -account $conjurConfig.account -token $adminToken -hostBranch $conjurConfig.hostBranch -cleanup $conjurConfig.cleanup
                     log $entitled
 
+                } else {
+                  #
+                  #
+                  #
                 }
 
             }
