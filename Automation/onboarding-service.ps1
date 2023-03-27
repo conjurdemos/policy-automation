@@ -397,6 +397,56 @@ function createHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
 
 function deleteHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
 
+    $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+
+    $headers.Add("Authorization", "Token token=`"$token`"")
+    $headers.Add("Content-Type","text/yaml")
+
+    $fileName = "tmp/$t.$thisHost.delete.yml"
+
+    $declareDelete = "- !delete"
+    $record = "  record: !host $thisHost"
+
+    try {
+
+        log "Building delete YAML for $thisHost"
+
+        $hostFileTemp = New-Item -ItemType "File" -Force $fileName
+
+        Add-Content $fileName -Encoding ASCII -Value $declareDelete
+        Add-Content $fileName -Encoding ASCII -Value $record
+
+        # This will prevent windows from reformating the file and giving us properly formatted yaml, avoiding a 422 from Conjur
+        $body = Get-Content -Path $hostFileTemp -Raw
+
+        log "Attempting to delete $thisHost from $branch"
+
+        $result = Invoke-RestMethod -Uri "https://$url/policies/$account/policy/$branch" -Method PATCH -Headers $headers -Body $body -ErrorAction SilentlyContinue
+
+        $jsonResult = $result | ConvertTo-Json
+
+        # Cleanup after use
+        if ( $cleanup -eq "true" ){
+
+            log "Cleaning up local cache"
+            Remove-Item -Path $hostFileTemp -Force
+
+            log "Successfully deleted host"
+            return $jsonResult
+
+        } else {
+
+            log "Successfully deleted host"
+            return $jsonResult
+
+        }
+
+    } catch {
+
+        log $_
+
+    }
+
 }
 
 function createEntitlement( $thisHost, $token, $url, $account, $branch, $hostBranch, $cleanup ){
@@ -527,9 +577,10 @@ function build(){
                     log $entitled
 
                 } else {
-                  #
-                  #
-                  #
+                    
+                    log "Failed to onboard host API key to PVWA. Deleting !host $safeName from Conjur"
+                    $deleted = deleteHost -thisHost $safeName -url $conjurConfig.master -account $conjurConfig.account -branch $conjurConfig.hostBranch -token $adminToken -cleanup $conjurConfig.cleanup
+
                 }
 
             }
