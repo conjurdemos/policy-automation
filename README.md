@@ -38,7 +38,7 @@ by CyberArk**. For more detailed information on our certification levels, see [o
    - The host will attempt to be loaded into Conjur
       - If successful, the host will then onboard to PVWA
       - If unsuccsseful, the automation will terminate and not entitle as it could not protect the credential
-         - If this happens, the host needs to be deleted in conjur and the permissions on the accounts used must be fixed to proceed
+         - If this happens, the script will attempt to delete the host from Conjur so that it can be rerun after the underlying issue has been fixed (safe permissions, pasObject password, etc.).
    - Once the host has been onboarded into PVWA, it will entitle the host to credentials
       - The host will be entitled with least privilege in mind, loading the policy into the target safe delegation branch
 
