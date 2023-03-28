@@ -243,7 +243,8 @@ function New-PVWALogin( $pvwaInfo ){
     } catch {
 
         log $_
-        exit
+        
+        return $false
     }
 
 }
