@@ -399,6 +399,8 @@ function createHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
 function deleteHost( $thisHost, $token, $url, $account, $branch, $cleanup ){
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+    
+    $t = Get-Date -Format o | ForEach-Object { $_ -replace ":", "." }
 
     $headers.Add("Authorization", "Token token=`"$token`"")
     $headers.Add("Content-Type","text/yaml")
