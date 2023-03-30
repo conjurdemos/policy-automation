@@ -204,7 +204,7 @@ Execute the following to run the automation:
 
 ## Operationalizing the Host-Automation through the Windows Task Scheduler
 
-Once the automation has been tested one-time manually with success, setting up operationally with the Windows Task Scheduler is the next optional path. Follow [this link](https://github.com/ztwright/SETUP.md) for more information..
+Once the automation has been tested one-time manually with success, setting up operationally with the Windows Task Scheduler is the next optional path. Follow [this link](https://github.com/ztwright/host-automation/SETUP.md) for more information.
 
 ## Contributing
 
