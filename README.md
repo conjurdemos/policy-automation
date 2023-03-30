@@ -14,7 +14,7 @@ by CyberArk**. For more detailed information on our certification levels, see [o
 - The automation checks the *delegation/consumers* group that is **created and managed by the `Synchronizer`**.
 - The **first** check is group members length is equal to 1. 
 - The **second** check is if this group has admin_option to true. Please see the example output below:
-> **Example of output of Synchronizer service (in JSON format)**
+> **Example of record checked by Host-Automation service (in JSON format)**
 > ```   {
 >       "created_at": "2019-10-31T14:37:00.878+00:00",
 >       "id": "conjur:group:vault/LOBName/SafeName/delegation/consumers",
@@ -66,7 +66,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
 
 > **ConjurHostsAccess Config**
 > | Attribute           | Value                             |
-> | ------------------- | --------------------------------: |
+> | ------------------- | :-------------------------------- |
 > | System Type         | Application                       |
 > | Assign to Platform  | CyberArk Vault (or duplication)   |
 > | Address             | `{{ privateark-vault-url }}`      |
@@ -78,7 +78,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
 >
 > **ConjurAutomation Config**
 > | Attribute           | Value                                  |
-> | ------------------- | --------------------------------:      |
+> | ------------------- | :--------------------------------      |
 > | System Type         | Application                            |
 > | Assign to Platform  | Conjur Hosts Via REST (or duplication) |
 > | Address             | `{{ conjur-leader-glb }}:443`          |
@@ -100,12 +100,12 @@ The Host automation does not handle annotations outside of creation timestamp. T
          - For Example: `ConjurHostsCPMPlugin`
    - Edit the Duplicated platform
       - Under Additional Settings
-         - Find account, change from TBD to match your current **Conjur Organization Account**
+         - Find `AccountName` parameter, and change from `TBD` to match your current **Conjur Organization Account** (i.e., *prod*)
    - Take note of the renamed platform
 - Validate CPM, PVWA and Synchronizer connectivity:
 
  | Component        | Needs to reach...    | via Port          | Operation
- | ---------------: | :------------------: | :---------------: | -----------
+ | :--------------- | :------------------- | :---------------: | -----------
  | CPM              | Conjur leader GLB    | `443`             | `n/a`
  | Host-Automation  | Conjur leader GLB    | `443`             | `write`
  | Host-Automation  | Conjur follower GLB  | `443`             | `read`
@@ -154,13 +154,13 @@ The Host automation does not handle annotations outside of creation timestamp. T
    - Update `"authn"` section, definitions below:
 
  | attribute                | value             | definition                |
- | -----------------------: | :---------------: | ------------------------- |
+ | :----------------------- | :---------------- | :------------------------ |
  | `"type"`                 | provider          | `provider` is the only value supported and should not change |
 
    - Update `"authn_config"` definitions as follows:
 
  | attribute                | value                         | definition                |
- | -----------------------: | :---------------------------: | ------------------------- |
+ | :----------------------- | :---------------------------- | :------------------------ |
  | `"automation_safe"`      | `Conjur-Automation`           | The safe that the CP has access to [^1] |
  | `"conjurObject"`         | `ConjurAutomation`            | The object that holds the `Conjur` authentication info |
  | `"pasObject"`            | `ConjurHostsAccess`           | The object that holds the `PrivateArk Vault` authentication info |
@@ -173,7 +173,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
    - Update `"conjur"` section, definitions below:
 
  | attribute                | value                            | definition                |
- | -----------------------: | :------------------------------: | ------------------------- |
+ | :----------------------- | :------------------------------- | :------------------------ |
  | `"master"`               | `cnjr-lead.example.com`          | The top-level DNS for the leader GLB [^3] |
  | `"follower"`             | `cnjr-follow.example.com`        | The top-level DNS for the follower GLB [^4] |
  | `"account"`              | `default`                        | The Conjur Organization account (*i.e., `prod`*) |
@@ -187,7 +187,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
    - Update `"pvwa"` section, definitions below:
 
  | attribute                | value                            | definition                |
- | -----------------------: | :------------------------------: | ------------------------- |
+ | :----------------------- | :------------------------------- | :------------------------ |
  | `"url"`                  | `pvwa.example.com`               | The top-level DNS of the PVWA target to onboard created hosts |
  | `"platform"`             | `ConjurHostsCPMPlugin`           | The platform being leveraged to handle automation [^6]
 
@@ -195,10 +195,16 @@ The Host automation does not handle annotations outside of creation timestamp. T
 
 ## Running the Host-Automation
 
+In order to run the automation, open a Powershell window as a service account at the following location: `{{ install-partition }}:\Program Files\Host-Automation\Automation`
 
+Execute the following to run the automation:
+```
+.\onboarding-service.ps1
+```
 
 ## Operationalizing the Host-Automation through the Windows Task Scheduler
-@@TODO: Add link to SETUP.md once that process has been documented. 
+
+Once the automation has been tested one-time manually with success, setting up operationally with the Windows Task Scheduler is the next optional path. Follow [this link](https://github.com/ztwright/SETUP.md) for more information..
 
 ## Contributing
 
