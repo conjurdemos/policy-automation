@@ -30,11 +30,11 @@ Adding a scheduled task to perform the host-automation on a predetermined freque
 
 ![image-6]
 
-- Under *New Action*, copy the settings so they are identical to the screenshot below, including the following:
+- In *Edit Action* window, copy the settings so they are identical to the screenshot below, including the following:
 
  | attribute                | value             |
  | :----------------------  | :---------------- |
- | Add arguments (optional) | `-ExecutionPolicy Bypass C:\Program Files\Host Automation\Automation\onboarding-service.ps1` |
+ | Add arguments (optional) | `-ExecutionPolicy Bypass {{ partition-letter }}:\Program Files\Host Automation\Automation\onboarding-service.ps1` |
 
 ![image-7]
 
