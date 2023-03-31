@@ -40,19 +40,19 @@ Adding a scheduled task to perform the host-automation on a predetermined freque
 
 
 
-[image-1]: https://github.com/ztwright/policy-automation/images/blob/main/host-auto-folder.png
+[image-1]: https://github.com/ztwright/policy-automation/blob/main/images/host-auto-folder.png
 
-[image-2]: https://github.com/ztwright/policy-automation/images/blob/main/find-task-sched.png
+[image-2]: https://github.com/ztwright/policy-automation/blob/main/images/find-task-sched.png
 
-[image-3]: https://github.com/ztwright/policy-automation/images/create-task.png
+[image-3]: https://github.com/ztwright/policy-automation/blob/main/images/create-task.png
 
-[task]: https://github.com/ztwright/policy-automation/images/task.png
+[task]: https://github.com/ztwright/policy-automation/blob/main/images/task.png
 
-[image-4]: https://github.com/ztwright/policy-automation/images/trigger.png
+[image-4]: https://github.com/ztwright/policy-automation/blob/main/images/trigger.png
 
-[image-5]: https://github.com/ztwright/policy-automation/images/trigger-settings.png
+[image-5]: https://github.com/ztwright/policy-automation/blob/main/images/trigger-settings.png
 
-[image-6]: https://github.com/ztwright/policy-automation/images/action.png
+[image-6]: https://github.com/ztwright/policy-automation/blob/main/images/action.png
 
-[image-7]: https://github.com/ztwright/policy-automation/images/set-exec-policy.png
+[image-7]: https://github.com/ztwright/policy-automation/blob/main/images/set-exec-policy.png
 
