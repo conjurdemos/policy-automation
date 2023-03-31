@@ -2,6 +2,8 @@
 
 Adding a scheduled task to perform the host-automation on a predetermined frequency.
 
+> ***Dislaimer***: Not developed nor tested for Production instances. 
+
 ## Setting up
 
 - Move the automation install bundle to the following location:

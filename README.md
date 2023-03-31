@@ -72,8 +72,9 @@ The Host automation does not handle annotations outside of creation timestamp. T
 > | Address             | `{{ privateark-vault-url }}`      |
 > | Username            | ConjurHostsAccess                 |
 > 
-> _Note_: Check the box next to 'Customize Account Name', and give it the same name as Username (ConjurHostsAccess).
-> _Additional Note: This user needs to have permissions to see and update the safe that the LOB has been added to. If it does not, it will not be able to onboard the host into the safe properly.
+> *Note*: Check the box next to 'Customize Account Name', and give it the same name as Username (ConjurHostsAccess).
+>
+> **Additional Note**: This user needs to have permissions to see and update the safe that the LOB has been added to. If it does not, it will not be able to onboard the host into the safe properly.
 
 >
 > **ConjurAutomation Config**
@@ -84,9 +85,11 @@ The Host automation does not handle annotations outside of creation timestamp. T
 > | Address             | `{{ conjur-leader-glb }}:443`          |
 > | Host                | ConjurAutomation                       |
 >
-> _Note_: Check the box next to 'Customize Account Name', and give it the same name as Username (`ConjurAutomation`).
-> _Additional Note_: The script adds `host/` into the host. Therefore, it is not necessary to add that as a value when onboarding to our *Conjur-Automation* safe
-> _Important_: The script does not support `user` for use in automation.
+> *Note*: Check the box next to 'Customize Account Name', and give it the same name as Username (`ConjurAutomation`).
+>
+> *Additional Note*: The script adds `host/` into the host. Therefore, it is not necessary to add that as a value when onboarding to our *Conjur-Automation* safe
+>
+> **Important**: The script does not support `user` for use in automation.
 
 ## Usage instructions
 
@@ -189,7 +192,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
  | attribute                | value                            | definition                |
  | :----------------------- | :------------------------------- | :------------------------ |
  | `"url"`                  | `pvwa.example.com`               | The top-level DNS of the PVWA target to onboard created hosts |
- | `"platform"`             | `ConjurHostsCPMPlugin`           | The platform being leveraged to handle automation [^6]
+ | `"platform"`             | `ConjurHostsCPMPlugin`           | The platform being leveraged to handle automation [^6] |
 
 > [^6]: This must match the platform name in the definition of the `ConjurAutomation` object. 
 
@@ -204,7 +207,9 @@ Execute the following to run the automation:
 
 ## Operationalizing the Host-Automation through the Windows Task Scheduler
 
-Once the automation has been tested one-time manually with success, setting up operationally with the Windows Task Scheduler is the next optional path. Follow [this link](https://github.com/ztwright/policy-automation/blob/main/SETUP.md) for more information.
+Once the automation has been tested one-time manually with success, setting up operationally with the Windows Task Scheduler is the next optional path. Follow [this link](https://github.com/ztwright/policy-automation/blob/main/SCHEDULED-TASK-SETUP.md) for more information. 
+
+> **Disclaimer**: Not developed nor tested for Production instances. 
 
 ## Contributing
 
