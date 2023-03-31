@@ -40,9 +40,9 @@ Adding a scheduled task to perform the host-automation on a predetermined freque
 
 
 
-[image-1]: https://github.com/ztwright/policy-automation/images/host-auto-folder.png
+[image-1]: https://github.com/ztwright/policy-automation/images/blob/main/host-auto-folder.png
 
-[image-2]: https://github.com/ztwright/policy-automation/images/find-task-sched.png
+[image-2]: https://github.com/ztwright/policy-automation/images/blob/main/find-task-sched.png
 
 [image-3]: https://github.com/ztwright/policy-automation/images/create-task.png
 
