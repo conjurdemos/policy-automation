@@ -15,7 +15,8 @@ by CyberArk**. For more detailed information on our certification levels, see [o
 - The **first** check is group members length is equal to 1. 
 - The **second** check is if this group has admin_option to true. Please see the example output below:
 > **Example of record checked by Host-Automation service (in JSON format)**
-> ```   {
+> ```   
+> {
 >       "created_at": "2019-10-31T14:37:00.878+00:00",
 >       "id": "conjur:group:vault/LOBName/SafeName/delegation/consumers",
 >       "policy": "conjur:policy:vault/LOBName/SafeName/delegation",
@@ -28,7 +29,7 @@ by CyberArk**. For more detailed information on our certification levels, see [o
 >               "policy": "conjur:policy:vault/LOBName/SafeName/delegation"
 >           }
 >       ]
->   }
+> }
 > ```
 - This logic tells the automation we need to create a host and add an entitlement. If the pattern matches an existing host identity (APPID) but has a different IDENTIFIER it will not create a new host but will entitle an existing host to this group:
    - Automation will parse the url and extract `SafeName`
@@ -59,7 +60,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
   - ``ConjurHostsAccess`` account, which will provide access to PVWA
   - ``ConjurAutomation`` account, which will provide access to Conjur
 
-> _Note_: The download of the ***ConjurHostsPlugin.zip*** can be found in the Support Vault -> CyberArk Conjur safe, at folder 'CPM Plugin' at the [Secure File Exchange (SFE)](https://support.cyberark.com/SFE/Logon.aspx). The instructions on how to install are in  ***Conjur Hosts Plugin Implementation Guide.pdf*** and in [1. Prepare PVWA for Conjur Host Automation](https://github.com/ztwright/policy-automation#1-prepare-pvwa-for-conjur-host-automation).
+> **Note**: The download of the ***ConjurHostsPlugin.zip*** can be found in the Support Vault -> CyberArk Conjur safe, at folder 'CPM Plugin' at the [Secure File Exchange (SFE)](https://support.cyberark.com/SFE/Logon.aspx). The instructions on how to install are in  ***Conjur Hosts Plugin Implementation Guide.pdf*** and in [1. Prepare PVWA for Conjur Host Automation](https://github.com/ztwright/policy-automation#1-prepare-pvwa-for-conjur-host-automation).
 > 1. In PVWA, add an account with platform type of `CyberArk Vault` and store it in the *conjur-automation* safe.
 > 2. In PVWA, add an account with platform type 'ConjurHostsViaRest' or its configured duplicate and store it in the "Conjur-Automation" safe.
 > 3. The `ConjurHostsAccess` Account must be added to the **Conjur-Automation** safe in PrivateArk vault before being added in PVWA (where applicable).
@@ -72,11 +73,27 @@ The Host automation does not handle annotations outside of creation timestamp. T
 > | Address             | `{{ privateark-vault-url }}`      |
 > | Username            | ConjurHostsAccess                 |
 > 
-> *Note*: Check the box next to 'Customize Account Name', and give it the same name as Username (ConjurHostsAccess).
+> **Notes**
+> 
+> 1. Check the box next to 'Customize Account Name', and give it the same name as Username (ConjurHostsAccess).
 >
-> **Additional Note**: This user needs to have permissions to see and update the safe that the LOB has been added to. If it does not, it will not be able to onboard the host into the safe properly.
+> 2. This user needs to have permissions to see and update the safe that the LOB has been added to. If it does not, it will not be able to onboard the host into the safe properly.
+> 
+> 3. This account must be added via PrivateArk client interface to the `*Conjur-Automation*` safe *first* in order for the automation to facilitate actions against the vault.
+>
+> Once the account has been created, add it as a member  to `Conjur-Automation` safe with the following privileges:
+>
+> | Access             | List                             |
+> | ------------------ | ------------                     |
+> |                    | Use                              |
+> |                    | Retrieve                         |
+> | Account management | Add accounts                     |
+> |                    | Update account properties        |
+> |                    | Update account content           |
+> | Workflow           | Access Safe without Confirmation |
+> | Advanced           | Create folders                   |
+> |                    | Delete folders                   |
 
->
 > **ConjurAutomation Config**
 > | Attribute           | Value                                  |
 > | ------------------- | :--------------------------------      |
@@ -85,11 +102,21 @@ The Host automation does not handle annotations outside of creation timestamp. T
 > | Address             | `{{ conjur-leader-glb }}:443`          |
 > | Host                | ConjurAutomation                       |
 >
-> *Note*: Check the box next to 'Customize Account Name', and give it the same name as Username (`ConjurAutomation`).
+> **Note**: Check the box next to 'Customize Account Name', and give it the same name as Username (`ConjurAutomation`).
 >
-> *Additional Note*: The script adds `host/` into the host. Therefore, it is not necessary to add that as a value when onboarding to our *Conjur-Automation* safe
+> **Additional Note**: The script adds `host/` into the host. Therefore, it is not necessary to add that as a value when onboarding to our *Conjur-Automation* safe.
 >
 > **Important**: The script does not support `user` for use in automation.
+
+> ***
+> **Important**: Both accounts **must** be added to the safes the automation acting upon, with the following permissions:
+> 
+> | Access   | List     |
+> | -------- | -------- |
+> |          | Use      |
+> |          | Retrieve |
+> | Workflow | Access Safe without Confirmation |
+> ***
 
 ## Usage instructions
 
@@ -163,7 +190,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
    - Update `"authn_config"` definitions as follows:
 
  | attribute                | value                         | definition                |
- | :----------------------- | :---------------------------- | :------------------------ |
+ | :----------------------- | ----------------------------- | :------------------------ |
  | `"automation_safe"`      | `Conjur-Automation`           | The safe that the CP has access to [^1] |
  | `"conjurObject"`         | `ConjurAutomation`            | The object that holds the `Conjur` authentication info |
  | `"pasObject"`            | `ConjurHostsAccess`           | The object that holds the `PrivateArk Vault` authentication info |
