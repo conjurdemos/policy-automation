@@ -1,6 +1,6 @@
 # Host API Key Automation
 
-Host API Key policy onboarding automation for Conjur.
+Host API Key policy generation with host creation, necessary entitlements and onboarding automation for Conjur.
 
 ## Certification level
 
@@ -75,11 +75,11 @@ The Host automation does not handle annotations outside of creation timestamp. T
 > 
 > **Notes**
 > 
-> 1. Check the box next to 'Customize Account Name', and give it the same name as Username (ConjurHostsAccess).
+> 1. Check the box next to 'Customize Account Name', and give it the same name as Username (`ConjurHostsAccess`).
 >
 > 2. This user needs to have permissions to see and update the safe that the LOB has been added to. If it does not, it will not be able to onboard the host into the safe properly.
 > 
-> 3. This account must be added via PrivateArk client interface to the `*Conjur-Automation*` safe *first* in order for the automation to facilitate actions against the vault.
+> 3. This account must be added via PrivateArk client interface to the `**Conjur-Automation**` safe *first* in order for the automation to facilitate actions against the vault.
 >
 > Once the account has been created, add it as a member  to `Conjur-Automation` safe with the following privileges:
 >
@@ -126,12 +126,11 @@ The Host automation does not handle annotations outside of creation timestamp. T
 > | List     |
 > | Use      |
 > | Retrieve |
-> 
 > ***
 
 ## Usage instructions
 
-### 1. Prepare PVWA for Conjur Host Automation
+### 1. Prepare PVWA for Conjur Host-Automation
 
 - Set up Conjur Host CP Plugin
    - Download the Conjur Host CP Plugin (for additional instructions see section [Requirements](https://github.com/ztwright/policy-automation#Requirements)
@@ -154,7 +153,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
 
 ### 2. Configuring Conjur Policy
 
-- Update and load the policy under the `Policy` Directory
+- Update and load the policy under the project's `Policy` Directory
    - The value for ` Sync_{{SyncHostName}}` must **match** what has already been configured for your existing Synchronizer implementation
 > For instance, if the {{SyncHostName}} was `PVWA-Cybr-Host-1`, then all instances in `Policy/01_root-sync.yml` would be replaced, such as the following:
 >
@@ -234,7 +233,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
 
 > [^6]: This must match the platform name in the definition of the `ConjurAutomation` object. 
 
-## Running the Host-Automation
+## Running the Policy-Automation
 
 In order to run the automation, open a Powershell window as a service account at the following location: `{{ install-partition }}:\Program Files\Host-Automation\Automation`
 
@@ -243,7 +242,7 @@ Execute the following to run the automation:
 .\onboarding-service.ps1
 ```
 
-## Operationalizing the Host-Automation through the Windows Task Scheduler
+## Operationalizing the Policy-Automation through the Windows Task Scheduler
 
 Once the automation has been tested one-time manually with success, setting up operationally with the Windows Task Scheduler is the next optional path. Follow [this link](https://github.com/ztwright/policy-automation/blob/main/SCHEDULED-TASK-SETUP.md) for more information. 
 
