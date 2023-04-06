@@ -79,7 +79,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
 >
 > 2. This user needs to have permissions to see and update the safe that the LOB has been added to. If it does not, it will not be able to onboard the host into the safe properly.
 > 
-> 3. This account must be added via PrivateArk client interface to the `**Conjur-Automation**` safe *first* in order for the automation to facilitate actions against the vault.
+> 3. This account must be added via PrivateArk client interface to the `Conjur-Automation` safe *first* in order for the automation to facilitate actions against the vault.
 >
 > Once the account has been created, add it as a member  to `Conjur-Automation` safe with the following privileges:
 >
