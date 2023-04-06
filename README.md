@@ -60,7 +60,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
   - ``ConjurHostsAccess`` account, which will provide access to PVWA
   - ``ConjurAutomation`` account, which will provide access to Conjur
 
-> **Note**: The download of the ***ConjurHostsPlugin.zip*** can be found in the Support Vault -> CyberArk Conjur safe, at folder 'CPM Plugin' at the CyberArk Secure File Exchange (SFE) Support Vault. The instructions on how to install are in  ***Conjur Hosts Plugin Implementation Guide.pdf*** and in [1. Prepare PVWA for Conjur Host Automation](https://github.com/ztwright/policy-automation#1-prepare-pvwa-for-conjur-host-automation).
+> **Note**: The download of the ***ConjurHostsPlugin.zip*** can be found in the Support Vault -> CyberArk Conjur safe, at folder 'CPM Plugin' at the CyberArk Secure File Exchange (SFE) Support Vault. The instructions on how to install are in  ***Conjur Hosts Plugin Implementation Guide.pdf*** and in [1. Prepare PVWA for Conjur Host Automation](https://github.com/conjurdemos/policy-automation#1-prepare-pvwa-for-conjur-host-automation).
 > 1. In PVWA, add an account with platform type of `CyberArk Vault` and store it in the *conjur-automation* safe.
 > 2. In PVWA, add an account with platform type 'ConjurHostsViaRest' or its configured duplicate and store it in the "Conjur-Automation" safe.
 > 3. The `ConjurHostsAccess` Account must be added to the **Conjur-Automation** safe in PrivateArk vault before being added in PVWA (where applicable).
@@ -117,7 +117,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
 > **Additional Note**: The script adds `host/` into the host. Therefore, it is not necessary to add that as a value when onboarding to our *Conjur-Automation* safe.
 >
 > **Important**: The script does not support `user` for use in automation.
-
+***
 > ***Note***: Both accounts **must** be added to the targetted safes the automation should act upon, with the following permissions:
 > 
 > | Access   |
@@ -131,7 +131,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
 ### 1. Prepare PVWA for Conjur Host-Automation
 
 - Set up Conjur Host CP Plugin
-   - Download the Conjur Host CP Plugin (for additional instructions see section [Requirements](https://github.com/ztwright/policy-automation#Requirements)).
+   - Download the Conjur Host CP Plugin (for additional instructions see section [Requirements](https://github.com/conjurdemos/policy-automation#Requirements)).
    - Import the platform into PVWA
    - Duplicate, activate and rename the platform to match current standards in the environment
       - For easability, it is recommended to rename this to a name without spaces or special characters
@@ -205,7 +205,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
  | `"appID"`                | `ConjurHostAutomation`   | The application-id associated with the CP Application in PVWA |
  | `"cpPath"`               | `C:\\Program Files\\CyberArk\\ApplicationPasswordSdk\\CLIPasswordSDK.exe`[^2] | The `Credential Provider SDK` path (.exe included) |
 
-> [^1]: This is the safe that was set up as part of fullfillment of the [Requirements](https://github.com/ztwright/policy-automation#Requirements) section.
+> [^1]: This is the safe that was set up as part of fullfillment of the [Requirements](https://github.com/conjurdemos/policy-automation#Requirements) section.
 > [^2]: The double `\`, this escaped the slash and allows the objects to be called correctly, else the json will be malformed.
 
    - Update `"conjur"` section, definitions below:
@@ -242,7 +242,7 @@ Execute the following to run the automation:
 
 ## Operationalizing the Policy-Automation through the Windows Task Scheduler
 
-Once the automation has been tested one-time manually with success, setting up operationally with the Windows Task Scheduler is the next optional path. Follow [this link](https://github.com/ztwright/policy-automation/blob/main/SCHEDULED-TASK-SETUP.md) for more information. 
+Once the automation has been tested one-time manually with success, setting up operationally with the Windows Task Scheduler is the next optional path. Follow [this link](https://github.com/conjurdemos/policy-automation/blob/main/SCHEDULED-TASK-SETUP.md) for more information. 
 
 > **Disclaimer**: Not developed nor tested for Production instances. 
 
