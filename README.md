@@ -83,17 +83,27 @@ The Host automation does not handle annotations outside of creation timestamp. T
 >
 > Once the account has been created, add it as a member  to `Conjur-Automation` safe with the following privileges:
 >
-> | Access             | List                             |
-> | ------------------ | ------------                     |
-> |                    | Use                              |
-> |                    | Retrieve                         |
-> | Account management | Add accounts                     |
-> |                    | Update account properties        |
-> |                    | Update account content           |
-> | Workflow           | Access Safe without Confirmation |
-> | Advanced           | Create folders                   |
-> |                    | Delete folders                   |
-
+> | Access   |          
+> | -------- | 
+> | List     |
+> | Use      |
+> | Retrieve |
+>
+> | Account management |
+> | ------------------------- | 
+> | Add accounts              |
+> | Update account properties |
+> | Update account content    |
+> 
+> | Workflow                         |
+> | -------------------------------- |
+> | Access Safe without Confirmation |
+>
+> | Advanced        |
+> | --------------- |
+> | Create folders  |
+> | Delete folders  |
+> ***
 > **ConjurAutomation Config**
 > | Attribute           | Value                                  |
 > | ------------------- | :--------------------------------      |
@@ -101,7 +111,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
 > | Assign to Platform  | Conjur Hosts Via REST (or duplication) |
 > | Address             | `{{ conjur-leader-glb }}:443`          |
 > | Host                | ConjurAutomation                       |
->
+> 
 > **Note**: Check the box next to 'Customize Account Name', and give it the same name as Username (`ConjurAutomation`).
 >
 > **Additional Note**: The script adds `host/` into the host. Therefore, it is not necessary to add that as a value when onboarding to our *Conjur-Automation* safe.
@@ -111,11 +121,12 @@ The Host automation does not handle annotations outside of creation timestamp. T
 > ***
 > **Important**: Both accounts **must** be added to the safes the automation acting upon, with the following permissions:
 > 
-> | Access   | List     |
-> | -------- | -------- |
-> |          | Use      |
-> |          | Retrieve |
-> | Workflow | Access Safe without Confirmation |
+> | Access   |
+> | -------- |
+> | List     |
+> | Use      |
+> | Retrieve |
+> 
 > ***
 
 ## Usage instructions
@@ -176,7 +187,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
   - Before running the automation the application must be registered as an application in Windows Event Viewer
     - Open Powershell as administrator and run the following command:
     `New-EventLog -Source "Conjur Onboarding Service" -LogName Application`
-    - Close the Administrator session.
+    - Close the Administrator session
 
 > Now that the logging service is set up, all actions will be shipped to Windows Event Viewer and can be filtered by `Conjur Onboarding Service`.
 
@@ -189,12 +200,12 @@ The Host automation does not handle annotations outside of creation timestamp. T
 
    - Update `"authn_config"` definitions as follows:
 
- | attribute                | value                         | definition                |
- | :----------------------- | ----------------------------- | :------------------------ |
- | `"automation_safe"`      | `Conjur-Automation`           | The safe that the CP has access to [^1] |
- | `"conjurObject"`         | `ConjurAutomation`            | The object that holds the `Conjur` authentication info |
- | `"pasObject"`            | `ConjurHostsAccess`           | The object that holds the `PrivateArk Vault` authentication info |
- | `"appID"`                | `ConjurHostAutomation`        | The application-id associated with the CP Application in PVWA |
+ | attribute                | value                    | definition                |
+ | :----------------------- | ------------------------ | :----------------------------- |
+ | `"automation_safe"`      | `Conjur-Automation`      | The safe that the CP has access to [^1] |
+ | `"conjurObject"`         | `ConjurAutomation`       | The object that holds the `Conjur` authentication info |
+ | `"pasObject"`            | `ConjurHostsAccess`      | The object that holds the `PrivateArk Vault` authentication info |
+ | `"appID"`                | `ConjurHostAutomation`   | The application-id associated with the CP Application in PVWA |
  | `"cpPath"`               | `C:\\Program Files\\CyberArk\\ApplicationPasswordSdk\\CLIPasswordSDK.exe`[^2] | The `Credential Provider SDK` path (.exe included) |
 
 > [^1]: This is the safe that was set up as part of fullfillment of the [Requirements](https://github.com/ztwright/policy-automation#Requirements) section.
