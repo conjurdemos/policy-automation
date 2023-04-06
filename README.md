@@ -118,21 +118,20 @@ The Host automation does not handle annotations outside of creation timestamp. T
 >
 > **Important**: The script does not support `user` for use in automation.
 
-
-### Important to note
-Both accounts **must** be added to the safes the automation acting upon, with the following permissions:
-| Access   |
-| -------- |
-| List     |
-| Use      |
-| Retrieve |
+> ***Note***: Both accounts **must** be added to the targetted safes the automation should act upon, with the following permissions:
+> 
+> | Access   |
+> | -------- |
+> | List     |
+> | Use      |
+> | Retrieve |
 
 ## Usage instructions
 
 ### 1. Prepare PVWA for Conjur Host-Automation
 
 - Set up Conjur Host CP Plugin
-   - Download the Conjur Host CP Plugin (for additional instructions see section [Requirements](https://github.com/ztwright/policy-automation#Requirements)
+   - Download the Conjur Host CP Plugin (for additional instructions see section [Requirements](https://github.com/ztwright/policy-automation#Requirements)).
    - Import the platform into PVWA
    - Duplicate, activate and rename the platform to match current standards in the environment
       - For easability, it is recommended to rename this to a name without spaces or special characters
