@@ -60,7 +60,7 @@ The Host automation does not handle annotations outside of creation timestamp. T
   - ``ConjurHostsAccess`` account, which will provide access to PVWA
   - ``ConjurAutomation`` account, which will provide access to Conjur
 
-> **Note**: The download of the ***ConjurHostsPlugin.zip*** can be found in the Support Vault -> CyberArk Conjur safe, at folder 'CPM Plugin' at the [Secure File Exchange (SFE)](https://support.cyberark.com/SFE/Logon.aspx). The instructions on how to install are in  ***Conjur Hosts Plugin Implementation Guide.pdf*** and in [1. Prepare PVWA for Conjur Host Automation](https://github.com/ztwright/policy-automation#1-prepare-pvwa-for-conjur-host-automation).
+> **Note**: The download of the ***ConjurHostsPlugin.zip*** can be found in the Support Vault -> CyberArk Conjur safe, at folder 'CPM Plugin' at the [Secure File Exchange (SFE)](https://support.cyberark.com). The instructions on how to install are in  ***Conjur Hosts Plugin Implementation Guide.pdf*** and in [1. Prepare PVWA for Conjur Host Automation](https://github.com/ztwright/policy-automation#1-prepare-pvwa-for-conjur-host-automation).
 > 1. In PVWA, add an account with platform type of `CyberArk Vault` and store it in the *conjur-automation* safe.
 > 2. In PVWA, add an account with platform type 'ConjurHostsViaRest' or its configured duplicate and store it in the "Conjur-Automation" safe.
 > 3. The `ConjurHostsAccess` Account must be added to the **Conjur-Automation** safe in PrivateArk vault before being added in PVWA (where applicable).
