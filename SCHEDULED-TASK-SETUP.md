@@ -4,53 +4,40 @@ Adding a scheduled task to perform the host-automation on a predetermined freque
 
 > ***Dislaimer***: Not developed nor tested for Production instances. 
 
+
 ## Setting up
 
 - Move the automation install bundle to the following location:
 ```
 {{ install-partition }}:\Program Files\CyberArk\
 ```
-![image-1]
-
-
+<img src=images/host-auto-folder.png width="500" height="250">
 
 - Open the Windows Task Scheduler
 
-![image-2]
+<img src=images/find-task-sched.png width="500" height="250">
 
+- Select <img src=images/task.png width="50" height="50"> *Create Task...*
 
-
-- Select ![task] *Create Task...*
-
-![image-3]
-
-
+<img src=images/create-task.png width="500" height="250">
 
 - Under **General** tab, copy the settings from below.
 
-![general]
+<img src=images/general-tab.png width="500" height="250">
 
 > **Note**: This documentation was put together for demonstration purposes. You should *_never_* run a scheduled task as anything except for an account managed by the Password Manager (CPM) and managed centrally from the Vault. 
 
-
-
 - Select the **Triggers** tab -> *New...*
 
-![image-4]
-
-
+<img src=images/trigger.png width="500" height="250">
 
 - Copy the settings in the screenshot below -> `OK`
 
-![image-5]
-
-
+<img src=images/trigger-settings.png width="500" height="250">
 
 - Select **Actions** tab -> *New...*
 
-![image-6]
-
-
+<img src=images/action.png width="500" height="250">
 
 - In *Edit Action* window, copy the settings so they are identical to the screenshot below, including the following:
 
@@ -58,35 +45,10 @@ Adding a scheduled task to perform the host-automation on a predetermined freque
  | :----------------------  | :---------------- |
  | Add arguments (optional) | `-ExecutionPolicy Bypass "{{ partition-letter }}:\Program Files\Host Automation\Automation\onboarding-service.ps1"`  |
 
-![image-7]
-
+<img src=images/set-exec-policy.png width="500" height="250">
 
 
 # Testing
 
 To test the job, simply right click the job in Task Scheduler -> `Run`
-
-![image-8]
-
-
-
-[image-1]: https://github.com/ztwright/policy-automation/blob/main/images/host-auto-folder.png
-
-[image-2]: https://github.com/ztwright/policy-automation/blob/main/images/find-task-sched.png
-
-[image-3]: https://github.com/ztwright/policy-automation/blob/main/images/create-task.png
-
-[task]: https://github.com/ztwright/policy-automation/blob/main/images/task.png
-
-[image-4]: https://github.com/ztwright/policy-automation/blob/main/images/trigger.png
-
-[image-5]: https://github.com/ztwright/policy-automation/blob/main/images/trigger-settings.png
-
-[image-6]: https://github.com/ztwright/policy-automation/blob/main/images/action.png
-
-[image-7]: https://github.com/ztwright/policy-automation/blob/main/images/set-exec-policy.png
-
-[image-8]: https://github.com/ztwright/policy-automation/blob/main/images/run-task.png
-
-[general]: https://github.com/ztwright/policy-automation/blob/main/images/general-tab.png
 

@@ -15,7 +15,8 @@ by CyberArk**. For more detailed information on our certification levels, see [o
 - The **first** check is group members length is equal to 1. 
 - The **second** check is if this group has admin_option to true. Please see the example output below:
 > **Example of record checked by Host-Automation service (in JSON format)**
-> ```   {
+> ```json
+>   {
 >       "created_at": "2019-10-31T14:37:00.878+00:00",
 >       "id": "conjur:group:vault/LOBName/SafeName/delegation/consumers",
 >       "policy": "conjur:policy:vault/LOBName/SafeName/delegation",
@@ -218,7 +219,7 @@ of our development workflows, please see our [contributing guide](CONTRIBUTING.m
 
 ## License
 
-Copyright (c) 2022 CyberArk Software Ltd. All rights reserved.
+Copyright (c) 2023 CyberArk Software Ltd. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
